@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.vscode/
+.pytest_cache/
+.env
+notebooks/
+models/
+mlruns/
+
+.DS_Store
+run.sh

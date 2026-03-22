@@ -1,0 +1,110 @@
+agent:
+  max_iterations: 5
+champion_model: random_forest
+champion_roc_auc: 0.833
+data:
+  database_path: data/raw_data/noshow.db
+  target_col: no_show
+  test_size: 0.15
+  validation_size: 0.15
+features:
+  binary:
+    - first_time
+  categorical:
+    - branch
+    - country
+    - room
+    - platform
+    - booking_month
+    - arrival_month
+  numerical:
+    - price
+    - num_adults
+    - num_children
+    - stay_length
+    - lead_time_months
+    - total_guests
+    - price_per_guest
+    - arrival_month_sin
+    - arrival_month_cos
+    - booking_month_sin
+    - booking_month_cos
+    - arrival_day_sin
+    - arrival_day_cos
+    - checkout_day_sin
+    - checkout_day_cos
+general:
+  environment: local
+  version: 1.0.0
+logging:
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  level: INFO
+mlflow:
+  experiments:
+    production: hotel_noshow_production
+    tuning: hotel_noshow_tuning
+  tracking_uri: ./mlruns
+models:
+  lightgbm:
+    colsample_bytree: 0.8955547499620482
+    learning_rate: 0.008725231172308221
+    max_depth: 15
+    min_child_samples: 5
+    n_estimators: 1488
+    num_leaves: 282
+    reg_alpha: 0.06125495231451704
+    reg_lambda: 0.06433398114835744
+    subsample: 0.8691899553557091
+  neural_network:
+    activation: tanh
+    alpha: 0.0015437355150634856
+    batch_size: 32
+    early_stopping_patience: 15
+    epochs: 100
+    hidden_layers:
+      - 256
+      - 128
+      - 64
+    learning_rate: 0.00019112050481819872
+    n_layers: 4
+    n_units_l0: 361
+    n_units_l1: 348
+    n_units_l2: 414
+    n_units_l3: 125
+  random_forest:
+    class_weight: balanced
+    max_depth: 22
+    max_features: 0.8
+    min_samples_leaf: 7
+    min_samples_split: 2
+    n_estimators: 563
+  tabnet:
+    batch_size: 512
+    gamma: 1.1408524963374218
+    lambda_sparse: 0.00030020273428108066
+    learning_rate: 0.029737193791243847
+    mask_type: entmax
+    max_epochs: 100
+    n_a: 39
+    n_d: 35
+    n_steps: 5
+    patience: 15
+    virtual_batch_size: 128
+  xgboost:
+    colsample_bytree: 0.5498282415664553
+    gamma: 0.4074896737265574
+    learning_rate: 0.006252749709729093
+    max_depth: 12
+    min_child_weight: 3
+    n_estimators: 1322
+    reg_alpha: 5.73881583521897e-07
+    reg_lambda: 7.71555135891761e-05
+    scale_pos_weight: 9.081074856792275
+    subsample: 0.826968577436646
+paths:
+  models_dir: models
+  production:
+    model: models/champion_model.joblib
+    preprocessor: models/production_preprocessor.joblib
+  tuning:
+    preprocessor: models/preprocessor.joblib

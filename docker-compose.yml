@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  streamlit-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hotel-noshow-app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./mlruns:/app/mlruns
+      - ./config:/app/config
+      - ./.env:/app/.env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - AZURE_OPENAI_KEY=${AZURE_OPENAI_KEY}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT}
+    command: streamlit run app.py
+
+  mlflow-server:
+    image: python:3.12-slim
+    container_name: mlflow-server
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+    working_dir: /mlruns
+    command: 
+      - /bin/bash
+      - -c
+      - |
+        pip install setuptools 'importlib-metadata<7.0' mlflow==2.11.3 && \
+        mlflow server \
+        --host 0.0.0.0 \
+        --port 5000 \
+        --backend-store-uri sqlite:///mlflow.db \
+        --default-artifact-root /mlruns \
+        --workers 1
